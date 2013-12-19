@@ -30,7 +30,7 @@ srvbak_status= status_must_be= status_must_not_be=
 baktogit= baktogit_items=() baktogit_keep_last=2
 data_dir_n=0 sensitive_data_dir_n=0
 postgresql_dbs=() mongo_host=localhost mongo_passfile= mongo_dbs=()
-dpkg_selections=
+redis_port= redis_do_backup= dpkg_selections=
 
 source "$scriptdir/srvbaklib.bash"
 
@@ -124,16 +124,19 @@ if [ "${#mongo_dbs[@]}" -ne 0 ]; then
   for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 fi
 
-# 7. dpkg selections
+# 7. redis
+[[ "$redis_do_backup" == [Yy]* ]] && redis_backup
+
+# 8. dpkg selections
 [[ "$dpkg_selections" == [Yy]* ]] && dpkg_selections_backup
 
-# 8. fix permissions
+# 9. fix permissions
 [ -n "$chown_to"    ] && chown_to     "$chown_to"
 [ -n "$chgrp_to"    ] && chgrp_to     "$chgrp_to"
 [ -n "$chmod_dirs"  ] && chmod_dirs   "$chmod_dirs"
 [ -n "$chmod_files" ] && chmod_files  "$chmod_files"
 
-# 9. after
+# 10. after
 run_multi "${after[@]}"
 
 set_ok
