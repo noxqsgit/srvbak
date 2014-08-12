@@ -76,6 +76,9 @@ postgresql_dbs=( user1:db1 :db2 )   # :foo <=> foo:foo
 mongo_host=localhost mongo_passfile=/opt/src/srvbak/mongopass
 mongo_dbs=( db3 db4 )
 
+redis_port=9990                     # default port=6379, will be auto used if left clear here
+redis_do_backup=yes
+
 # --
 
 dpkg_selections=yes                 # save dpkg selections

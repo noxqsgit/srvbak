@@ -438,4 +438,25 @@ function dpkg_selections_backup ()
   rm_obsolete_backups "$dir"
 }                                                               # }}}1
 
+# Usage: redis_backup
+# Redis dump to $base_dir/postgresql/$date.dump.rdb.gpg.
+# Removes obsolete backups.
+# Uses $redis*.
+function redis_backup ()
+{                                                               # {{{1
+  local dir="$base_dir/redis"
+  local temp="$( mktemp_dry )"
+  local dump="$dir/$date".dump.rdb.gpg
+
+  [ -n "$redis_port" ] || local redis_port=6379
+
+  run mkdir -p "$dir"
+  run redis-cli -p "$redis_port" SAVE
+  run cp /var/lib/redis/dump.rdb "$temp"
+  run redis-check-dump "$temp"
+  gpg_file "$dump" "$temp"
+  run rm -f "$temp"
+  rm_obsolete_backups "$dir"
+}                                                               # }}}1
+
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :
